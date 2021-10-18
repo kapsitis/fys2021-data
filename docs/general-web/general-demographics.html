@@ -24,7 +24,7 @@ var svg = d3.select("#my_dataviz")
           "translate(" + margin.left + "," + margin.top + ")");
 
 // Parse the Data
-d3.csv("/general-web/data_stacked.csv", function(data) {
+d3.csv("data_stacked.csv", function(data) {
 
   // List of subgroups = header of the csv files = soil condition here
   var subgroups = data.columns.slice(1)
