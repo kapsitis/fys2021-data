@@ -1,15 +1,38 @@
 <!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="/style/style.css">
 <meta charset="utf-8">
+<title>Aizkraukle Region: General Demographics</title>
+<script src="https://d3js.org/d3.v4.js"></script><!-- Load d3.js -->
 
-<!-- Load d3.js -->
-<script src="https://d3js.org/d3.v4.js"></script>
+</head>
+<body>
 
-<p>Population proportions by age groups (blue - 0-14 years, green - 15-64 years, red - 65 and above).</p>
+
+<h1>Demographic Data</h1>
+
+<p style="margin:0pt; font-family:Calibri; font-size:80%"><a href="../index.html">Back to Home</a></p>
+
+
+<p style="font-family:Calibri; font-size:80%; margin: 6pt 36pt 6pt 36pt;"><b>Abstract:</b> 
+Show the population by age groups, genders, etc. 
+Since parishes (Jaunjelgavas, Sunākstes, Pilskalnes pagasts) may be very small compared to 
+Aizkraukle city, the grouping is done by the 6 old regions (Aizkraukles, Jaunjelgavas, Kokneses, 
+Neretas, Pļaviņu, Skrīveru). We should not confuse the big/new Aizkraukle municipality that includes them all 
+with the small/old Aizkraukles novads, which was roughly 27% of the current municipality by population.
+</p>
+
+<p>Population numbers by age groups (green - 0-14 years, orange - 15-64 years, violet - 65 and above).</p>
 
 <!-- Create a div where the graph will take place -->
-<div id="my_dataviz"></div>
+<div id="age_groups1_id"></div>
+
+
 
 <script>
+
+// https://blog.scottlogic.com/2019/05/09/building-a-better-d3-axis.html
 
 // set the dimensions and margins of the graph
 var margin = {top: 10, right: 30, bottom: 20, left: 50},
@@ -17,7 +40,7 @@ var margin = {top: 10, right: 30, bottom: 20, left: 50},
     height = 400 - margin.top - margin.bottom;
 
 // append the svg object to the body of the page
-var svg = d3.select("#my_dataviz")
+var svg = d3.select("#age_groups1_id")
   .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
@@ -26,26 +49,34 @@ var svg = d3.select("#my_dataviz")
           "translate(" + margin.left + "," + margin.top + ")");
 
 // Parse the Data
-d3.csv("data_stacked.csv", function(data) {
-
-  // List of subgroups = header of the csv files = soil condition here
+d3.csv("age_groups1.csv", function(data) {
+  // List of subgroups = titles of the csv columns
   var subgroups = data.columns.slice(1)
 
-  // List of groups = species here = value of the first column called group -> I show them on the X axis
-  var groups = d3.map(data, function(d){return(d.group)}).keys()
-
+  // List of groups to display: value of the first column shown on the X axis
+  var groups = d3.map(data, function(d){return(d.OldMunicipality)}).keys()
+  
+  
   // Add X axis
   var x = d3.scaleBand()
       .domain(groups)
       .range([0, width])
       .padding([0.2])
+
+  //var xAxis = d3.svg.axis()
+  //  .scale(x);
+
+
+
   svg.append("g")
     .attr("transform", "translate(0," + height + ")")
     .call(d3.axisBottom(x).tickSizeOuter(0));
+	//.call(xAxis);
+	
 
   // Add Y axis
   var y = d3.scaleLinear()
-    .domain([0, 60])
+    .domain([0, 10000])
     .range([ height, 0 ]);
   svg.append("g")
     .call(d3.axisLeft(y));
@@ -53,7 +84,8 @@ d3.csv("data_stacked.csv", function(data) {
   // color palette = one color per subgroup
   var color = d3.scaleOrdinal()
     .domain(subgroups)
-    .range(['#e41a1c','#377eb8','#4daf4a'])
+    //.range(['#e41a1c','#377eb8','#4daf4a'])
+	.range(["#1B9E77", "#D95F02", "#7570B3"])
 
   //stack the data? --> stack per subgroup
   var stackedData = d3.stack()
@@ -71,11 +103,14 @@ d3.csv("data_stacked.csv", function(data) {
       // enter a second time = loop subgroup per subgroup to add all rectangles
       .data(function(d) { return d; })
       .enter().append("rect")
-        .attr("x", function(d) { return x(d.data.group); })
+        .attr("x", function(d) { return x( d.data.OldMunicipality); })
         .attr("y", function(d) { return y(d[1]); })
         .attr("height", function(d) { return y(d[0]) - y(d[1]); })
         .attr("width",x.bandwidth())
+		.attr("title", "HUHU")
 })
 
 </script>
+</body>
+</html>
 
