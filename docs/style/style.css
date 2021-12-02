@@ -9,3 +9,9 @@ h1 {
 h2 {
 	font-weight: normal;
 }
+
+h1 {text-align: center;}
+body {text-align: center;}
+body {
+  background-color: #e8de46;
+}
